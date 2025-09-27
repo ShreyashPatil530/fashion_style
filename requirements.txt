@@ -6,6 +6,6 @@ ultralytics==8.0.196
 opencv-python-headless==4.8.1.78
 Pillow==9.5.0
 
-# PyTorch CPU wheels
-torch==2.8.0+cpu --index-url https://download.pytorch.org/whl/cpu
-torchvision==0.23.0+cpu --index-url https://download.pytorch.org/whl/cpu
+# Correct CPU PyTorch install
+torch==2.8.0
+torchvision==0.23.0

@@ -1,23 +1,21 @@
-# Use Python 3.11 slim image
+# Base image
 FROM python:3.11-slim
 
 # Set working directory
 WORKDIR /app
 
-# Copy requirements first for caching
+# Copy requirements first (for caching)
 COPY requirements.txt .
 
-# Upgrade pip
+# Upgrade pip and install dependencies
 RUN pip install --upgrade pip
-
-# Install dependencies including PyTorch CPU
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of your application
+# Copy the rest of your app
 COPY . .
 
-# Expose the port (Railway uses PORT env variable)
-EXPOSE 8000
+# Expose port for Railway
+ENV PORT 8000
 
-# Run the application
+# Run the app
 CMD ["gunicorn", "--bind", "0.0.0.0:8000", "main:app"]

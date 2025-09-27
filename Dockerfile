@@ -19,3 +19,6 @@ ENV PORT 8000
 
 # Run the app
 CMD ["gunicorn", "--bind", "0.0.0.0:8000", "main:app"]
+
+# Install PyTorch CPU version
+RUN pip install torch==2.8.0+cpu torchvision==0.23.0+cpu -f https://download.pytorch.org/whl/cpu/torch_stable.html

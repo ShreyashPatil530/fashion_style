@@ -56,7 +56,7 @@ Before running this application, make sure you have:
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/yourusername/fashion_style.git
+git clone https://github.com/ShreyashPatil530/fashion_style
 cd fashion_style
 ```
 

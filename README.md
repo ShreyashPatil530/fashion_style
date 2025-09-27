@@ -1,10 +1,16 @@
-# AI Fashion Stylist 👔✨
+# AI Fashion Stylist
+
+[![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://python.org)
+[![Flask](https://img.shields.io/badge/Flask-2.3.3-green.svg)](https://flask.palletsprojects.com)
+[![YOLOv8](https://img.shields.io/badge/YOLOv8-Computer%20Vision-orange.svg)](https://ultralytics.com)
+[![OpenAI](https://img.shields.io/badge/OpenAI-GPT--4-red.svg)](https://openai.com)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Maintenance](https://img.shields.io/badge/Maintained-Yes-brightgreen.svg)](https://github.com/yourusername/fashion_style)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/yourusername/fashion_style/pulls)
 
 An intelligent web application that analyzes your outfit photos using AI and provides personalized fashion recommendations, style suggestions, and shopping links.
 
-![AI Fashion Stylist Demo](https://via.placeholder.com/800x400/667eea/ffffff?text=AI+Fashion+Stylist)
-
-## 🌟 Features
+## Features
 
 - **AI-Powered Image Analysis**: Uses YOLOv8 computer vision to detect clothing items in photos
 - **Intelligent Style Suggestions**: OpenAI GPT-4 powered fashion recommendations
@@ -12,23 +18,9 @@ An intelligent web application that analyzes your outfit photos using AI and pro
 - **Real-time Processing**: Fast outfit analysis with detailed feedback
 - **Responsive Design**: Works seamlessly on desktop and mobile devices
 - **User-Friendly Interface**: Intuitive drag-and-drop file upload
+- **Fallback Systems**: Graceful handling when APIs are unavailable
 
-## 🚀 Live Demo
-
-[Visit Live Application](https://your-app-url.railway.app) *(Replace with your actual deployment URL)*
-
-## 📸 Screenshots
-
-### Upload Interface
-![Upload Interface](https://via.placeholder.com/600x300/f8f9fa/343a40?text=Upload+Interface)
-
-### Analysis Results
-![Analysis Results](https://via.placeholder.com/600x400/e9ecef/495057?text=AI+Analysis+Results)
-
-### Shopping Recommendations
-![Shopping Links](https://via.placeholder.com/600x300/fff3cd/856404?text=Shopping+Recommendations)
-
-## 🛠️ Technology Stack
+## Technology Stack
 
 ### Backend
 - **Flask** - Python web framework
@@ -50,17 +42,17 @@ An intelligent web application that analyzes your outfit photos using AI and pro
 - **SerpAPI** - Search engine results
 - **MySQL Database** - Data persistence
 
-## 📋 Prerequisites
+## Prerequisites
 
 Before running this application, make sure you have:
 
 - Python 3.8+ installed
-- MySQL server running
+- MySQL server running (optional - has fallback mode)
 - API keys for:
   - OpenAI API
   - SerpAPI
 
-## ⚙️ Installation & Setup
+## Installation & Setup
 
 ### 1. Clone the Repository
 ```bash
@@ -91,16 +83,16 @@ Create a `.env` file in the project root:
 OPENAI_API_KEY=your_openai_api_key_here
 SERPAPI_KEY=your_serpapi_key_here
 
-# Database Configuration
+# Database Configuration (Optional)
 MYSQL_HOST=localhost
 MYSQL_USER=root
 MYSQL_PASSWORD=your_mysql_password
 MYSQL_DATABASE=fashion_stylist
 ```
 
-### 5. Database Setup
+### 5. Database Setup (Optional)
 ```bash
-# Run database initialization
+# Run database initialization - app works without this
 python db.py
 ```
 
@@ -112,7 +104,7 @@ python app.py
 # The application will be available at http://localhost:5000
 ```
 
-## 🧪 Testing
+## Testing
 
 Run the comprehensive test suite:
 ```bash
@@ -125,7 +117,7 @@ This will test:
 - Complete analysis pipeline
 - API integrations
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 fashion_style/
@@ -133,15 +125,12 @@ fashion_style/
 ├── requirements.txt       # Python dependencies
 ├── .env                  # Environment variables (not in repo)
 ├── README.md             # Project documentation
-├── Procfile              # Deployment configuration
-├── railway.toml          # Railway deployment config
-├── render.yaml          # Render deployment config
 ├──
-├── backend/
-│   ├── yolo_detect.py    # YOLO computer vision module
-│   ├── openai_api.py     # OpenAI integration
-│   ├── serpapi_api.py    # SerpAPI integration
-│   └── db.py            # Database operations
+├── yolo_detect.py        # YOLO computer vision module
+├── openai_api.py         # OpenAI integration
+├── serpapi_api.py        # SerpAPI integration
+├── db.py                 # Database operations
+├── test_app.py           # Application tests
 ├──
 ├── templates/
 │   └── index.html        # Main HTML template
@@ -149,14 +138,11 @@ fashion_style/
 ├── static/
 │   ├── style.css        # Custom CSS styles
 │   └── script.js        # Frontend JavaScript
-├──
-├── tests/
-│   └── test_app.py      # Application tests
 └──
 └── uploads/             # Temporary file storage (auto-created)
 ```
 
-## 🔧 Configuration
+## Configuration
 
 ### API Keys Setup
 
@@ -173,51 +159,11 @@ fashion_style/
 ### Database Configuration
 
 The application supports MySQL with automatic fallback:
-- **Production**: Uses MySQL for data persistence
-- **Development**: Falls back to in-memory storage if MySQL unavailable
+- **With MySQL**: Uses database for data persistence
+- **Without MySQL**: Falls back to in-memory storage
+- **No setup required**: App works immediately without database
 
-## 🚀 Deployment
-
-### Quick Deploy Options
-
-#### Railway (Recommended)
-```bash
-# Install Railway CLI
-npm install -g @railway/cli
-
-# Login and deploy
-railway login
-railway link
-railway up
-```
-
-#### Render
-1. Connect GitHub repository to Render
-2. Set environment variables in dashboard
-3. Deploy automatically
-
-#### Manual Deployment
-```bash
-# Install gunicorn for production
-pip install gunicorn
-
-# Run production server
-gunicorn --bind 0.0.0.0:$PORT app:app
-```
-
-### Environment Variables for Production
-```env
-# Required
-OPENAI_API_KEY=your_key
-SERPAPI_KEY=your_key
-
-# Optional (for database)
-MYSQL_HOST=your_host
-MYSQL_USER=your_user
-MYSQL_PASSWORD=your_password
-```
-
-## 📖 Usage Guide
+## Usage Guide
 
 ### 1. Upload Photo
 - Click upload area or drag & drop image
@@ -239,7 +185,7 @@ MYSQL_PASSWORD=your_password
 - Links redirect to retailer websites
 - Prices and ratings displayed
 
-## 🔍 API Endpoints
+## API Endpoints
 
 ### Main Endpoints
 - `GET /` - Main application interface
@@ -280,7 +226,7 @@ FormData: {
 }
 ```
 
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repository
 2. Create feature branch: `git checkout -b feature/amazing-feature`
@@ -292,20 +238,20 @@ FormData: {
 - Follow PEP 8 Python style guide
 - Add tests for new features
 - Update documentation as needed
-- Ensure compatibility with free deployment tiers
+- Ensure graceful fallback handling
 
-## 📝 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 👨‍💻 Author
+## Author
 
 **Shreyash Patil**
 - GitHub: [@yourusername](https://github.com/yourusername)
 - LinkedIn: [Your LinkedIn](https://linkedin.com/in/yourprofile)
 - Email: your.email@example.com
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - **YOLOv8** by Ultralytics for computer vision capabilities
 - **OpenAI** for natural language processing
@@ -313,7 +259,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Bootstrap** for responsive UI components
 - **Font Awesome** for icons
 
-## 📊 Performance Notes
+## Performance Notes
 
 ### Resource Usage
 - **Memory**: ~500MB-1GB during processing
@@ -326,14 +272,14 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - Responsive design for all devices
 - Efficient image processing
 
-## 🔒 Security
+## Security
 
 - File type validation and size limits
 - Secure filename handling
 - Environment variable protection
 - No sensitive data in client-side code
 
-## 📈 Future Enhancements
+## Future Enhancements
 
 - [ ] User accounts and history
 - [ ] Advanced color analysis
@@ -343,7 +289,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [ ] Multi-language support
 - [ ] Style trend analysis
 
-## ❓ Troubleshooting
+## Troubleshooting
 
 ### Common Issues
 
@@ -370,4 +316,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-⭐ **If you find this project helpful, please give it a star!** ⭐
+**If you find this project helpful, please give it a star!**

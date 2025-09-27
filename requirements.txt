@@ -5,7 +5,11 @@ gunicorn==21.2.0
 ultralytics==8.0.196
 opencv-python-headless==4.8.1.78
 Pillow==9.5.0
-
-# Correct CPU PyTorch install
 torch==2.8.0
 torchvision==0.23.0
+numpy
+pandas
+matplotlib
+scipy
+seaborn
+requests

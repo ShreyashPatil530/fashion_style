@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Fashion Stylist</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        /* Additional styles for better file upload UX */
+        .file-drop-area {
+            border: 2px dashed #007bff;
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+        }
+        
+        .file-drop-area:hover {
+            border-color: #0056b3;
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .file-drop-area.drag-over {
+            border-color: #28a745;
+            background: rgba(40, 167, 69, 0.1);
+        }
+        
+        .file-input-label {
+            cursor: pointer;
+            display: block;
+            width: 100%;
+        }
+        
+        .file-preview {
+            max-width: 100%;
+            max-height: 200px;
+            margin: 1rem 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        
+        .submit-btn {
+            transition: all 0.3s ease;
+        }
+        
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <!-- Header -->
+        <header class="bg-primary text-white py-4 mb-4">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <h1 class="mb-0">
+                            <i class="fas fa-tshirt me-2"></i>
+                            AI Fashion Stylist
+                        </h1>
+                        <p class="mb-0 opacity-75">Upload your outfit photo for AI-powered style analysis</p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="container">
+            <!-- Upload Section -->
+            <div class="row justify-content-center mb-5">
+                <div class="col-md-8">
+                    <div class="card shadow">
+                        <div class="card-body p-4">
+                            <h3 class="card-title text-center mb-4">
+                                <i class="fas fa-upload me-2"></i>
+                                Upload Your Outfit Photo
+                            </h3>
+                            
+                            <form id="uploadForm" enctype="multipart/form-data" method="post">
+                                <!-- File Drop Area -->
+                                <div class="file-drop-area mb-3" id="fileDropArea">
+                                    <div class="mb-3">
+                                        <i class="fas fa-cloud-upload-alt fa-3x text-primary mb-3"></i>
+                                        <h5>Drag & Drop your image here</h5>
+                                        <p class="text-muted">or click to browse files</p>
+                                        
+                                        <label for="imageFile" class="file-input-label">
+                                            <input type="file" 
+                                                   class="form-control d-none" 
+                                                   id="imageFile" 
+                                                   name="image" 
+                                                   accept="image/*" 
+                                                   required>
+                                        </label>
+                                        
+                                        <!-- File Info Display -->
+                                        <div id="fileInfo" class="mt-3 d-none">
+                                            <div class="alert alert-success">
+                                                <i class="fas fa-check-circle me-2"></i>
+                                                <span id="fileName">No file selected</span>
+                                                <small id="fileSize" class="d-block text-muted"></small>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Image Preview -->
+                                        <div id="imagePreview" class="mt-3"></div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="userId" class="form-label">Your Name (Optional)</label>
+                                    <input type="text" 
+                                           class="form-control" 
+                                           id="userId" 
+                                           name="user_id" 
+                                           placeholder="Enter your name (optional)">
+                                </div>
+                                
+                                <div class="d-grid">
+                                    <button type="submit" 
+                                            class="btn btn-primary btn-lg submit-btn" 
+                                            id="submitBtn"
+                                            disabled>
+                                        <i class="fas fa-magic me-2"></i>
+                                        <span id="submitText">Select an Image First</span>
+                                    </button>
+                                </div>
+                            </form>
+                            
+                            <!-- Loading indicator -->
+                            <div id="loadingIndicator" class="text-center mt-4 d-none">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <p class="mt-2">
+                                    <strong>Analyzing your style...</strong><br>
+                                    <small class="text-muted">This may take 30-60 seconds</small>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div id="resultsSection" class="d-none">
+                <!-- Detected Items -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="card shadow">
+                            <div class="card-header bg-success text-white">
+                                <h4 class="mb-0">
+                                    <i class="fas fa-search me-2"></i>
+                                    Detected Items
+                                </h4>
+                            </div>
+                            <div class="card-body">
+                                <div id="detectedItems" class="row">
+                                    <!-- Items will be populated here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Suggestions -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="card shadow">
+                            <div class="card-header bg-info text-white">
+                                <h4 class="mb-0">
+                                    <i class="fas fa-robot me-2"></i>
+                                    AI Style Suggestions
+                                </h4>
+                            </div>
+                            <div class="card-body">
+                                <div id="aiSuggestions" class="formatted-content">
+                                    <!-- AI suggestions will be populated here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Shopping Links -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="card shadow">
+                            <div class="card-header bg-warning text-dark">
+                                <h4 class="mb-0">
+                                    <i class="fas fa-shopping-cart me-2"></i>
+                                    Shop Similar Items
+                                </h4>
+                            </div>
+                            <div class="card-body">
+                                <div id="shoppingLinks" class="row">
+                                    <!-- Shopping links will be populated here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Try Again Button -->
+                <div class="row mb-4">
+                    <div class="col-12 text-center">
+                        <button id="tryAgainBtn" class="btn btn-outline-primary btn-lg">
+                            <i class="fas fa-redo me-2"></i>
+                            Analyze Another Outfit
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Error Message -->
+            <div id="errorMessage" class="alert alert-danger d-none" role="alert">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                <span id="errorText"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-3 mt-5">
+        <div class="container">
+            <p class="mb-0">&copy; 2025 Shreyash Patil -- AI Fashion Stylist Project . Powered by YOLOv8, OpenAI GPT-4, and SerpAPI.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Enhanced File Upload Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const uploadForm = document.getElementById('uploadForm');
+            const fileInput = document.getElementById('imageFile');
+            const fileDropArea = document.getElementById('fileDropArea');
+            const submitBtn = document.getElementById('submitBtn');
+            const submitText = document.getElementById('submitText');
+            const fileInfo = document.getElementById('fileInfo');
+            const fileName = document.getElementById('fileName');
+            const fileSize = document.getElementById('fileSize');
+            const imagePreview = document.getElementById('imagePreview');
+            
+            // Make the entire drop area clickable
+            fileDropArea.addEventListener('click', function(e) {
+                if (e.target !== fileInput) {
+                    fileInput.click();
+                }
+            });
+            
+            // File input change handler
+            fileInput.addEventListener('change', function(e) {
+                handleFileSelect(e.target.files[0]);
+            });
+            
+            // Drag and drop handlers
+            fileDropArea.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                fileDropArea.classList.add('drag-over');
+            });
+            
+            fileDropArea.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                fileDropArea.classList.remove('drag-over');
+            });
+            
+            fileDropArea.addEventListener('drop', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                fileDropArea.classList.remove('drag-over');
+                
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    fileInput.files = files;
+                    handleFileSelect(files[0]);
+                }
+            });
+            
+            function handleFileSelect(file) {
+                if (!file) {
+                    resetFileDisplay();
+                    return;
+                }
+                
+                console.log('File selected:', file.name, file.type, file.size);
+                
+                // Validate file type
+                const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/bmp', 'image/webp'];
+                if (!allowedTypes.includes(file.type)) {
+                    showError('Please select a valid image file (JPG, PNG, GIF, BMP, or WebP)');
+                    resetFileDisplay();
+                    return;
+                }
+                
+                // Validate file size (16MB max)
+                const maxSize = 16 * 1024 * 1024;
+                if (file.size > maxSize) {
+                    showError('File size must be less than 16MB');
+                    resetFileDisplay();
+                    return;
+                }
+                
+                // Display file info
+                fileName.textContent = file.name;
+                fileSize.textContent = `Size: ${(file.size / 1024 / 1024).toFixed(2)} MB`;
+                fileInfo.classList.remove('d-none');
+                
+                // Enable submit button
+                submitBtn.disabled = false;
+                submitText.textContent = 'Analyze My Style';
+                
+                // Show image preview
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.innerHTML = `
+                        <img src="${e.target.result}" class="file-preview" alt="Preview">
+                        <button type="button" class="btn btn-sm btn-danger" onclick="clearFile()">
+                            <i class="fas fa-times"></i> Remove Image
+                        </button>
+                    `;
+                };
+                reader.readAsDataURL(file);
+                
+                // Hide any error messages
+                hideError();
+            }
+            
+            function resetFileDisplay() {
+                fileInfo.classList.add('d-none');
+                imagePreview.innerHTML = '';
+                submitBtn.disabled = true;
+                submitText.textContent = 'Select an Image First';
+            }
+            
+            // Global function to clear file
+            window.clearFile = function() {
+                fileInput.value = '';
+                resetFileDisplay();
+            };
+            
+            // Form submission with better handling
+            uploadForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                if (!fileInput.files[0]) {
+                    showError('Please select an image file first');
+                    return;
+                }
+                
+                console.log('Form submitted with file:', fileInput.files[0].name);
+                
+                // Disable form during submission
+                submitBtn.disabled = true;
+                submitText.textContent = 'Analyzing...';
+                
+                // Show loading
+                document.getElementById('loadingIndicator').classList.remove('d-none');
+                hideError();
+                document.getElementById('resultsSection').classList.add('d-none');
+                
+                try {
+                    const formData = new FormData(uploadForm);
+                    
+                    const response = await fetch('/analyze', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    console.log('Response status:', response.status);
+                    
+                    const data = await response.json();
+                    console.log('Response data:', data);
+                    
+                    if (data.success) {
+                        displayResults(data);
+                    } else {
+                        showError(data.error || 'Analysis failed. Please try again.');
+                    }
+                    
+                } catch (error) {
+                    console.error('Request error:', error);
+                    showError('Failed to connect to the server. Please check your connection and try again.');
+                } finally {
+                    // Re-enable form
+                    document.getElementById('loadingIndicator').classList.add('d-none');
+                    submitBtn.disabled = false;
+                    submitText.textContent = 'Analyze My Style';
+                }
+            });
+            
+            function showError(message) {
+                const errorDiv = document.getElementById('errorMessage');
+                const errorText = document.getElementById('errorText');
+                errorText.textContent = message;
+                errorDiv.classList.remove('d-none');
+                errorDiv.scrollIntoView({ behavior: 'smooth' });
+            }
+            
+            function hideError() {
+                document.getElementById('errorMessage').classList.add('d-none');
+            }
+            
+            function displayResults(data) {
+                // This function will be handled by the main script.js
+                console.log('Results received:', data);
+                document.getElementById('resultsSection').classList.remove('d-none');
+                // The main script.js will handle the detailed display
+            }
+        });
+    </script>
+    
+    <!-- Custom JS -->
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

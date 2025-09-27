@@ -1,0 +1,22 @@
+# Core Flask dependencies
+Flask==2.3.3
+Werkzeug==2.3.7
+python-dotenv==1.0.0
+gunicorn==21.2.0
+
+# Computer Vision and AI
+ultralytics==8.0.196
+opencv-python-headless==4.8.1.78
+Pillow==10.0.1
+numpy==1.24.3
+
+# API integrations
+requests==2.31.0
+openai==0.28.1
+
+# Database (make optional for deployment)
+mysql-connector-python==8.1.0
+
+# Optional: lighter versions for deployment
+# torch==2.0.1+cpu -f https://download.pytorch.org/whl/torch_stable.html
+# torchvision==0.15.2+cpu -f https://download.pytorch.org/whl/torch_stable.html

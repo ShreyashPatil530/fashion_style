@@ -1,4 +1,4 @@
-# AI Fashion Stylist
+# AI Fashion Stylist 👕
 
 [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://python.org)
 [![Flask](https://img.shields.io/badge/Flask-2.3.3-green.svg)](https://flask.palletsprojects.com)

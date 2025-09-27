@@ -1,20 +1,15 @@
-# Use a smaller Python base image
-FROM python:3.11-slim
-
 # Set working directory
 WORKDIR /app
 
-# Copy only requirements first (caching layer)
+# Copy requirements
 COPY requirements.txt .
 
-# Install dependencies
+# Upgrade pip and install dependencies
+RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of your project
+# Copy app code
 COPY . .
 
-# Expose port for Railway
-EXPOSE 8000
-
-# Run the app with Gunicorn
+# Set the command
 CMD ["gunicorn", "--bind", "0.0.0.0:8000", "main:app"]

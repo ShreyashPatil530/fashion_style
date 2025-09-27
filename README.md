@@ -80,13 +80,13 @@ pip install -r requirements.txt
 Create a `.env` file in the project root:
 ```env
 # API Keys
-OPENAI_API_KEY=your_openai_api_key_here
-SERPAPI_KEY=your_serpapi_key_here
+OPENAI_API_KEY=**********...
+SERPAPI_KEY=****************
 
 # Database Configuration (Optional)
-MYSQL_HOST=localhost
-MYSQL_USER=root
-MYSQL_PASSWORD=your_mysql_password
+MYSQL_HOST=*******
+MYSQL_USER=*******
+MYSQL_PASSWORD=********
 MYSQL_DATABASE=fashion_stylist
 ```
 

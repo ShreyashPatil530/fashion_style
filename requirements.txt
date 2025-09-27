@@ -4,4 +4,4 @@ python-dotenv==1.0.0
 gunicorn==21.2.0
 ultralytics==8.0.196
 opencv-python-headless==4.8.1.78
-Pillow==9.5.0   # <-- downgrade from 10.0.1 to 9.5.0
+Pillow==9.5.0

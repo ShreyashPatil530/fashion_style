@@ -1,26 +1,24 @@
-# Use Python 3.11 slim as base image
+# 1. Use official Python 3.11 slim image as base
 FROM python:3.11-slim
 
-# Set working directory
+# 2. Set working directory
 WORKDIR /app
 
-# Copy requirements first for caching
+# 3. Copy requirements file
 COPY requirements.txt .
 
-# Upgrade pip
+# 4. Upgrade pip and install dependencies from requirements.txt
 RUN pip install --upgrade pip
-
-# Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of the application
+# 5. Install PyTorch CPU and TorchVision CPU
+RUN pip install torch==2.8.0 torchvision==0.23.0 -f https://download.pytorch.org/whl/cpu/torch_stable.html
+
+# 6. Copy the rest of the application
 COPY . .
 
-# Install PyTorch CPU version
-RUN pip install torch==2.8.0 torchvision==0.23.0
+# 7. Expose port (Railway uses environment variable PORT)
+EXPOSE ${PORT:-8000}
 
-# Expose the port (Railway uses $PORT)
-EXPOSE 8000
-
-# Start the app with Gunicorn
+# 8. Command to run the app using Gunicorn
 CMD ["gunicorn", "--bind", "0.0.0.0:8000", "main:app"]

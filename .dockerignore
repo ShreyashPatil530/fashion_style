@@ -1,0 +1,6 @@
+__pycache__/
+.env
+.git/
+*.pyc
+*.pkl
+*.h5

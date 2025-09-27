@@ -5,3 +5,8 @@ gunicorn==21.2.0
 ultralytics==8.0.196
 opencv-python-headless==4.8.1.78
 Pillow==9.5.0
+torch==2.8.0+cpu
+torchvision==0.23.0+cpu
+ultralytics==8.0.196
+openai==0.27.8
+mysql-connector-python==8.1.0
